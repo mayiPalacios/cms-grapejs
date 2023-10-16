@@ -1,9 +1,11 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import "grapesjs/dist/css/grapes.min.css";
 import grapesjs from "grapesjs";
 
 function Builder() {
+  const {designStructure,setdesignStructure} = useState()
   const editorRef = useRef(null);
+
 
   useEffect(() => {
     const editor = grapesjs.init({
@@ -88,10 +90,18 @@ function Builder() {
           // Más configuración según tus necesidades
         },
       },
+
+     
+
     });
 
+
     return () => {
+      let editorValue = editor.getHtml();
+       setdesignStructure(editorValue) 
+      
       editor.destroy();
+      
     };
   }, []);
 
