@@ -8,14 +8,24 @@ function Builder() {
   
   const editorRef = useRef(null);
 
+  
   const handleSendHtml = async () => {
     let response
     try {
-     
-        
        const html =  designStructure
-        console.log(designStructure)
-        response = await posthtml(html)
+   
+       const divElement = document.createElement('div');
+     
+      divElement.innerHTML = html;
+
+      if (divElement.querySelector('body')) {
+        const bodyContent = divElement.querySelector('body').innerHTML;
+        divElement.innerHTML = bodyContent;
+      }
+
+      const modifiedHTML = divElement.innerHTML;
+      console.log(modifiedHTML)
+        response = await posthtml(modifiedHTML)
       
     } catch (error) {
       console.error('Error en la solicitud:', error);
@@ -118,9 +128,11 @@ function Builder() {
     editor.on('component:update', () => {
       setDesignStructure(editor.getHtml()); // Captura el HTML cuando se actualiza un componente
     });
+
+
     
     return () => {
-     
+      
       editor.destroy();
       
     };
