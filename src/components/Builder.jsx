@@ -1,10 +1,26 @@
 import React, { useEffect, useRef, useState } from "react";
 import "grapesjs/dist/css/grapes.min.css";
 import grapesjs from "grapesjs";
+import {  posthtml } from "../api/apiCallsMethod";
 
 function Builder() {
-  const {designStructure,setdesignStructure} = useState()
+  const [designStructure, setDesignStructure] = useState("");
+  
   const editorRef = useRef(null);
+
+  const handleSendHtml = async () => {
+    let response
+    try {
+     
+        
+       const html =  designStructure
+        console.log(designStructure)
+        response = await posthtml(html)
+      
+    } catch (error) {
+      console.error('Error en la solicitud:', error);
+    }
+  };
 
 
   useEffect(() => {
@@ -90,16 +106,21 @@ function Builder() {
           // Más configuración según tus necesidades
         },
       },
-
+         
      
 
     });
 
+    editor.on('component:drag:start', () => {
+      setDesignStructure(editor.getHtml()); // Captura el HTML cuando se inicia el arrastre de un componente
+    });
 
+    editor.on('component:update', () => {
+      setDesignStructure(editor.getHtml()); // Captura el HTML cuando se actualiza un componente
+    });
+    
     return () => {
-      let editorValue = editor.getHtml();
-       setdesignStructure(editorValue) 
-      
+     
       editor.destroy();
       
     };
@@ -109,6 +130,7 @@ function Builder() {
     <div>
       <div ref={editorRef}></div>
       <div id="custom-component-container"></div>
+      <button onClick={handleSendHtml}>Enviar HTML</button>
     </div>
   );
 }
